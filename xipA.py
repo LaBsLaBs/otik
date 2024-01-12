@@ -80,17 +80,21 @@ def check_path_to_zip(path: str):
     return True
 
 
-def get_file_str(file_from, code):
+def get_file_str(file_from):
     data = b''
 
     with open(file_from, 'rb') as file_r:
         data = file_r.read()
     
+    return data
+    
+
+def encodeCodes(data, code):
     if code == CODE_2:
         return lab4.RLEencode(data)
     else:
         return data
-    
+
 
 def zip_loop(file_path, code):
     data = dict()
@@ -99,9 +103,10 @@ def zip_loop(file_path, code):
         print(f'encoding dir \'{root}\'')
         data[root] = []
         for file in files:
-            buf = get_file_str(os.path.join(root, file), code)
+            file_str = get_file_str(os.path.join(root, file))
+            buf = encodeCodes(file_str, code)
             data[root] += [{file: buf}]
-            print(f'+\tfile \'{file}\' was encoded')
+            print(f'+\tfile \'{file}\' was encoded: {len(file_str)} -> {len(buf)}(in bytes)')
 
     return data
 
